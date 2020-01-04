@@ -150,14 +150,17 @@ class Baseline(nn.Module):
             self.bottleneck.apply(weights_init_kaiming)
             self.classifier.apply(weights_init_classifier)
 
-    def forward(self, x):
+    def forward(self, x ,for_cluster = False):
 
         global_feat = self.gap(self.base(x))  # (b, 2048, 1, 1)
         global_feat = global_feat.view(global_feat.shape[0], -1)  # flatten to (bs, 2048)
 
-        if self.neck == 'no':
+        if for_cluster:
+            feat = global_feat
+        elif self.neck == 'no':
             feat = global_feat
         elif self.neck == 'bnneck':
+            #here
             feat = self.bottleneck(global_feat)  # normalize for angular softmax
 
         if self.training:

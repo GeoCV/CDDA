@@ -69,7 +69,7 @@ def create_supervised_trainer_with_center(
         target_img = target_img.to(device) if torch.cuda.device_count() >= 1 else target_img
 
         score, feat = model(img)
-        _,target_feat = model(img)
+        _,target_feat = model(img,for_cluster = True)
         loss = loss_fn(score, feat, target)
         loss_cluster = loss_cluster_fn(feat)
         loss +=loss_cluster

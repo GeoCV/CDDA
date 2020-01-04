@@ -90,7 +90,7 @@ def make_loss_with_center(cfg, num_classes):    # modified by gu
                   'but got {}'.format(cfg.MODEL.METRIC_LOSS_TYPE))
     return loss_func, center_criterion
 
-def make_loss_with_cluster(cgf,cluster_num_classes):
+def make_loss_with_cluster(cfg,cluster_num_classes):
     feat_dim = 2048 #对于resnet50来说
     cluster_criterion = ClusterLoss(num_classes=cluster_num_classes, feat_dim=feat_dim, use_gpu=True)
     def loss_func(feat):
