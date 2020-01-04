@@ -93,6 +93,7 @@ class ClusterLoss(nn.Module):
         Q_low = torch.pow(D,2)/Fj #shape(batchsize,self.num_classes)
         Q = Q_low / Q_low.sum(dim=1,keepdim=True) #shape(batchsize,self.num_classes)
         loss = D.mul(torch.log(D/Q)).clamp(min=1e-12, max=1e+12).sum() / batch_size
+        return loss
 
 
 if __name__ == '__main__':
