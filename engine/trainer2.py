@@ -16,6 +16,8 @@ from utils.reid_metric import R1_mAP
 
 global ITER
 ITER = 0
+global EPOCH
+EPOCH = 1
 
 def create_supervised_trainer_with_center(
     model, 
@@ -50,34 +52,40 @@ def create_supervised_trainer_with_center(
     target_train_loader_iter = iter(target_train_loader)
 
     def _update(engine, batch):
-        #获取目标数据集batch
-        try:
-            target_img = next(target_train_loader_iter)[0]
-        except:
-            target_train_loader_iter = iter(target_train_loader)
-            target_img = next(target_train_loader_iter)[0]
         model.train()
         optimizer.zero_grad()
         optimizer_center.zero_grad()
-        optimizer_cluster.zero_grad()
         img, target = batch
         #源域图片
         img = img.to(device) if torch.cuda.device_count() >= 1 else img
         #源域标签
         target = target.to(device) if torch.cuda.device_count() >= 1 else target
-        #目标域图片
-        target_img = target_img.to(device) if torch.cuda.device_count() >= 1 else target_img
-
         score, feat = model(img)
-        _,target_feat = model(img,for_cluster = True)
         loss = loss_fn(score, feat, target)
-        loss_cluster = loss_cluster_fn(feat)
-        loss +=loss_cluster
-        print("Total loss is {}, center loss is {}, cluster loss is {}".format(loss, center_criterion(feat, target),loss_cluster))
+        global EPOCH
+        global ITER
+        if EPOCH > 30:
+            #获取目标数据集batch
+            try:
+                target_img = next(target_train_loader_iter)[0]
+            except:
+                target_train_loader_iter = iter(target_train_loader)
+                target_img = next(target_train_loader_iter)[0]
+            #目标域图片
+            target_img = target_img.to(device) if torch.cuda.device_count() >= 1 else target_img
+            optimizer_cluster.zero_grad()
+            _,target_feat = model(target_img,for_cluster = True)
+            loss_cluster = loss_cluster_fn(target_feat)
+            loss += loss_cluster
+            if ITER == 0:
+                print("Total loss is {}, center loss is {}, cluster loss is {}".format(loss, center_loss_weight*center_criterion(feat, target),loss_cluster))
+        else:
+            if ITER == 0:
+                print("Total loss is {}, center loss is {}".format(loss, center_criterion(feat, target)))
         loss.backward()
         optimizer.step()
         for param in center_criterion.parameters():
-            param.grad.data *= (1. / cetner_loss_weight)
+            param.grad.data *= (1. / center_loss_weight)
         optimizer_center.step()
         for param in cluster_criterion.parameters():
             param.grad.data *= (1. / cluster_loss_weight)
@@ -171,7 +179,8 @@ def do_train_with_center2(
     trainer.add_event_handler(Events.EPOCH_COMPLETED, checkpointer, {'model': model,
                                                                      'optimizer': optimizer,
                                                                      'center_param': center_criterion,
-                                                                     'optimizer_center': optimizer_center})
+                                                                     'optimizer_center': optimizer_center,
+                                                                     'optimizer_cluster': optimizer_cluster})
 
     timer.attach(trainer, start=Events.EPOCH_STARTED, resume=Events.ITERATION_STARTED,
                  pause=Events.ITERATION_COMPLETED, step=Events.ITERATION_COMPLETED)
@@ -200,6 +209,8 @@ def do_train_with_center2(
                                 scheduler.get_lr()[0]))
         if len(train_loader) == ITER:
             ITER = 0
+            global EPOCH
+            EPOCH+=1
 
     # adding handlers using `trainer.on` decorator API
     @trainer.on(Events.EPOCH_COMPLETED)

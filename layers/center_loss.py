@@ -69,8 +69,8 @@ class ClusterLoss(nn.Module):
 
     def __init__(self, num_classes=751, feat_dim=2048, use_gpu=True):
         super(ClusterLoss, self).__init__()
-        self.num_classes = 2#num_classes
-        self.feat_dim = 3#feat_dim
+        self.num_classes = num_classes
+        self.feat_dim = feat_dim
         self.use_gpu = use_gpu
 
         if self.use_gpu:
