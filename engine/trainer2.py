@@ -31,6 +31,7 @@ def create_supervised_trainer_with_center(
     center_loss_weight,
     cluster_loss_weight,
     target_train_loader,#
+    logger,
     device=None):
     """
     Factory function for creating a trainer for supervised models
@@ -87,9 +88,10 @@ def create_supervised_trainer_with_center(
         for param in center_criterion.parameters():
             param.grad.data *= (1. / center_loss_weight)
         optimizer_center.step()
-        for param in cluster_criterion.parameters():
-            param.grad.data *= (1. / cluster_loss_weight)
-        optimizer_cluster.step()
+        if EPOCH > 30:
+            for param in cluster_criterion.parameters():
+                param.grad.data *= (1. / cluster_loss_weight)
+            optimizer_cluster.step()
 
         # compute acc
         acc = (score.max(1)[1] == target).float().mean()
@@ -169,9 +171,9 @@ def do_train_with_center2(
         loss_cluster_fn,#
         cfg.SOLVER.CENTER_LOSS_WEIGHT,
         cfg.SOLVER.CLUSTER_LOSS_WEIGHT,
-        target_train_loader,#         
-        device=device,
-        logger
+        target_train_loader,# 
+        logger,      
+        device=device
         )
     evaluator = create_supervised_evaluator(model, metrics={'r1_mAP': R1_mAP(num_query, max_rank=50, feat_norm=cfg.TEST.FEAT_NORM)}, device=device)
     checkpointer = ModelCheckpoint(output_dir, cfg.MODEL.NAME, checkpoint_period, n_saved=10, require_empty=False)
