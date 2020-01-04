@@ -78,10 +78,10 @@ def create_supervised_trainer_with_center(
             loss_cluster = loss_cluster_fn(target_feat)
             loss += loss_cluster
             if ITER == 0:
-                print("Total loss is {}, center loss is {}, cluster loss is {}".format(loss, center_loss_weight*center_criterion(feat, target),loss_cluster))
+                logger.info("Total loss is {}, center loss is {}, cluster loss is {}".format(loss, center_loss_weight*center_criterion(feat, target),loss_cluster))
         else:
             if ITER == 0:
-                print("Total loss is {}, center loss is {}".format(loss, center_criterion(feat, target)))
+                logger.info("Total loss is {}, center loss is {}".format(loss, center_criterion(feat, target)))
         loss.backward()
         optimizer.step()
         for param in center_criterion.parameters():
@@ -170,7 +170,8 @@ def do_train_with_center2(
         cfg.SOLVER.CENTER_LOSS_WEIGHT,
         cfg.SOLVER.CLUSTER_LOSS_WEIGHT,
         target_train_loader,#         
-        device=device
+        device=device,
+        logger
         )
     evaluator = create_supervised_evaluator(model, metrics={'r1_mAP': R1_mAP(num_query, max_rank=50, feat_norm=cfg.TEST.FEAT_NORM)}, device=device)
     checkpointer = ModelCheckpoint(output_dir, cfg.MODEL.NAME, checkpoint_period, n_saved=10, require_empty=False)

@@ -67,6 +67,6 @@ TEST:
   NECK_FEAT: 'before'
   FEAT_NORM: 'no'
 
-OUTPUT_DIR: '/home/aistudio/work/CDDA/log/Mar2D_CDL')"
+OUTPUT_DIR: '/home/aistudio/work/CDDA/log/Mar2D_CDL'
 
 
