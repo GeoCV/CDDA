@@ -188,3 +188,8 @@ class Baseline(nn.Module):
                 # print(i[0])
                 continue
             self.state_dict()[k].copy_(param_dict.state_dict()[k])
+
+    def load_param2(self, trained_path):
+        param_dict = torch.load(trained_path)
+        for k, v in param_dict.state_dict().items():
+            self.state_dict()[k].copy_(param_dict.state_dict()[k])

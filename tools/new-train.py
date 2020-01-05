@@ -43,8 +43,7 @@ def train(cfg):
 
     # Add for using self trained model
     if cfg.MODEL.PRETRAIN_CHOICE == 'self':
-        #start_epoch = eval(cfg.MODEL.PRETRAIN_PATH.split('/')[-1].split('.')[0].split('_')[-1])
-        start_epoch = 0
+        start_epoch = eval(cfg.MODEL.PRETRAIN_PATH.split('/')[-1].split('.')[0].split('_')[-1])
         print('Start epoch:', start_epoch)
         path_to_optimizer = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer')
         print('Path to the checkpoint of optimizer:', path_to_optimizer)
@@ -52,21 +51,27 @@ def train(cfg):
         print('Path to the checkpoint of center_param:', path_to_center_param)
         path_to_optimizer_center = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_center')
         print('Path to the checkpoint of optimizer_center:', path_to_optimizer_center)
-        model.cuda()
-
-        #model.load_state_dict(torch.load(cfg.MODEL.PRETRAIN_PATH),strict=False)
+        
         model.load_param(cfg.MODEL.PRETRAIN_PATH)
-        optimizer.load_state_dict(torch.load(path_to_optimizer))
+        optimizer.load_param2(path_to_optimizer)
+        center_criterion.load_param2(path_to_center_param)
+        optimizer_center.load_param2(path_to_optimizer_center)
+        """
+        model.load_state_dict(torch.load(cfg.MODEL.PRETRAIN_PATH))
+        optimizer.load_state_dict(torch.load(path_to_optimizer),strict=False)
         center_criterion.load_state_dict(torch.load(path_to_center_param))
         optimizer_center.load_state_dict(torch.load(path_to_optimizer_center))
+        """
         ###
         if start_epoch > 30:
             path_to_cluster_param = cfg.MODEL.PRETRAIN_PATH.replace('model', 'cluster_param')
             print('Path to the checkpoint of cluster_param:', path_to_cluster_param)
             path_to_optimizer_cluster = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_cluster')
             print('Path to the checkpoint of optimizer_cluster:', path_to_optimizer_cluster)
-            cluster_criterion.load_state_dict(torch.load(path_to_cluster_param))
-            optimizer_cluster.load_state_dict(torch.load(path_to_optimizer_cluster))
+            cluster_criterion.load_param2(path_to_cluster_param)
+            optimizer_cluster.load_param2(path_to_optimizer_cluster)
+            #cluster_criterion.load_state_dict(torch.load(path_to_cluster_param))
+            #optimizer_cluster.load_state_dict(torch.load(path_to_optimizer_cluster))
         ###
         scheduler = WarmupMultiStepLR(optimizer, cfg.SOLVER.STEPS, cfg.SOLVER.GAMMA, cfg.SOLVER.WARMUP_FACTOR,
                                         cfg.SOLVER.WARMUP_ITERS, cfg.SOLVER.WARMUP_METHOD, start_epoch)
