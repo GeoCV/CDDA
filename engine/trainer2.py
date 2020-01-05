@@ -85,7 +85,7 @@ def create_supervised_trainer_with_center(
         for param in center_criterion.parameters():
             param.grad.data *= (1. / center_loss_weight)
         optimizer_center.step()
-        if engine.state.epoch > 30:
+        if engine.state.epoch > 60:
             for param in cluster_criterion.parameters():
                 param.grad.data *= (1. / cluster_loss_weight)
             optimizer_cluster.step()
