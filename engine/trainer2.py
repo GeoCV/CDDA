@@ -16,8 +16,6 @@ from utils.reid_metric import R1_mAP
 
 global ITER
 ITER = 0
-global EPOCH
-EPOCH = 1
 
 def create_supervised_trainer_with_center(
     model, 
@@ -63,9 +61,8 @@ def create_supervised_trainer_with_center(
         target = target.to(device) if torch.cuda.device_count() >= 1 else target
         score, feat = model(img)
         loss = loss_fn(score, feat, target)
-        global EPOCH
         global ITER
-        if EPOCH >= 30:
+        if engine.state.epoch >= 30:
             #获取目标数据集batch
             try:
                 target_img = next(target_train_loader_iter)[0]
@@ -88,7 +85,7 @@ def create_supervised_trainer_with_center(
         for param in center_criterion.parameters():
             param.grad.data *= (1. / center_loss_weight)
         optimizer_center.step()
-        if EPOCH > 30:
+        if engine.state.epoch >= 30:
             for param in cluster_criterion.parameters():
                 param.grad.data *= (1. / cluster_loss_weight)
             optimizer_cluster.step()
@@ -196,8 +193,6 @@ def do_train_with_center2(
     @trainer.on(Events.STARTED)
     def start_training(engine):
         engine.state.epoch = start_epoch
-        global EPOCH
-        EPOCH = start_epoch
         evaluator.run(val_loader)
         cmc, mAP = evaluator.state.metrics['r1_mAP']
         logger.info("Source Validation Results - Epoch: {}".format(engine.state.epoch))
@@ -227,8 +222,6 @@ def do_train_with_center2(
                                 scheduler.get_lr()[0]))
         if len(train_loader) == ITER:
             ITER = 0
-            global EPOCH
-            EPOCH+=1
 
     # adding handlers using `trainer.on` decorator API
     @trainer.on(Events.EPOCH_COMPLETED)
