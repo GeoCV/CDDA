@@ -82,7 +82,7 @@ def train(cfg):
         optimizer_center.load_state_dict(torch.load(path_to_optimizer_center))
         """
         ###
-        if start_epoch >= 60:
+        if start_epoch >= cfg.SOLVER.MY_START_EPOCH:
             path_to_cluster_param = cfg.MODEL.PRETRAIN_PATH.replace('model', 'cluster_param')
             print('Path to the checkpoint of cluster_param:', path_to_cluster_param)
             path_to_optimizer_cluster = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_cluster')
@@ -128,7 +128,8 @@ def train(cfg):
         loss_func,
         loss_cluster_func,  #
         num_query,
-        start_epoch     # add for using self trained model
+        start_epoch,     # add for using self trained model
+        cfg.SOLVER.MY_START_EPOCH #开始聚类损失的EPOCH
     )
 
 

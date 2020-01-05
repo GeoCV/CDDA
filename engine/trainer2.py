@@ -30,6 +30,7 @@ def create_supervised_trainer_with_center(
     cluster_loss_weight,
     target_train_loader,#
     logger,
+    my_start_epoch,
     device=None):
     """
     Factory function for creating a trainer for supervised models
@@ -62,7 +63,7 @@ def create_supervised_trainer_with_center(
         score, feat = model(img)
         loss = loss_fn(score, feat, target)
         global ITER
-        if engine.state.epoch > 60:
+        if engine.state.epoch > my_start_epoch:
             #获取目标数据集batch
             try:
                 target_img = next(target_train_loader_iter)[0]
@@ -85,7 +86,7 @@ def create_supervised_trainer_with_center(
         for param in center_criterion.parameters():
             param.grad.data *= (1. / center_loss_weight)
         optimizer_center.step()
-        if engine.state.epoch > 60:
+        if engine.state.epoch > my_start_epoch:
             for param in cluster_criterion.parameters():
                 param.grad.data *= (1. / cluster_loss_weight)
             optimizer_cluster.step()
@@ -147,7 +148,8 @@ def do_train_with_center2(
         loss_fn,
         loss_cluster_fn,  #
         num_query,
-        start_epoch     
+        start_epoch,
+        my_start_epoch  
 ):
     log_period = cfg.SOLVER.LOG_PERIOD
     checkpoint_period = cfg.SOLVER.CHECKPOINT_PERIOD
@@ -170,7 +172,8 @@ def do_train_with_center2(
         cfg.SOLVER.CENTER_LOSS_WEIGHT,
         cfg.SOLVER.CLUSTER_LOSS_WEIGHT,
         target_train_loader,# 
-        logger,      
+        logger, 
+        my_start_epoch,     
         device=device
         )
     evaluator = create_supervised_evaluator(model, metrics={'r1_mAP': R1_mAP(num_query, max_rank=50, feat_norm=cfg.TEST.FEAT_NORM)}, device=device)
