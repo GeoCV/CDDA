@@ -53,9 +53,6 @@ def train(cfg):
         path_to_optimizer_center = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_center')
         print('Path to the checkpoint of optimizer_center:', path_to_optimizer_center)
         model.cuda()
-        optimizer.cuda()
-        center_criterion.cuda()
-        optimizer_center.cuda()
 
         model.load_state_dict(torch.load(cfg.MODEL.PRETRAIN_PATH),strict=False)
         optimizer.load_state_dict(torch.load(path_to_optimizer),strict=False)
@@ -67,8 +64,6 @@ def train(cfg):
             print('Path to the checkpoint of cluster_param:', path_to_cluster_param)
             path_to_optimizer_cluster = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_cluster')
             print('Path to the checkpoint of optimizer_cluster:', path_to_optimizer_cluster)
-            cluster_criterion.cuda()
-            optimizer_cluster.cuda()
             cluster_criterion.load_state_dict(torch.load(path_to_cluster_param),strict=False)
             optimizer_cluster.load_state_dict(torch.load(path_to_optimizer_cluster),strict=False)
         ###
