@@ -56,10 +56,11 @@ def train(cfg):
         center_criterion.load_state_dict(torch.load(path_to_center_param))
         optimizer_center.load_state_dict(torch.load(path_to_optimizer_center))
         ###
-        path_to_cluster_param = cfg.MODEL.PRETRAIN_PATH.replace('model', 'cluster_param')
-        print('Path to the checkpoint of cluster_param:', path_to_cluster_param)
-        path_to_optimizer_cluster = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_cluster')
-        print('Path to the checkpoint of optimizer_cluster:', path_to_optimizer_cluster)
+        if start_epoch > 30:
+            path_to_cluster_param = cfg.MODEL.PRETRAIN_PATH.replace('model', 'cluster_param')
+            print('Path to the checkpoint of cluster_param:', path_to_cluster_param)
+            path_to_optimizer_cluster = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_cluster')
+            print('Path to the checkpoint of optimizer_cluster:', path_to_optimizer_cluster)
 
         cluster_criterion.load_state_dict(torch.load(path_to_cluster_param))
         optimizer_cluster.load_state_dict(torch.load(path_to_optimizer_cluster))
