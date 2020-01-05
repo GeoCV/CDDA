@@ -193,8 +193,7 @@ def do_train_with_center2(
 
     @trainer.on(Events.STARTED)
     def start_training(engine):
-        engine.state.
-         = start_epoch
+        engine.state.epoch = start_epoch
         evaluator.run(val_loader)
         cmc, mAP = evaluator.state.metrics['r1_mAP']
         logger.info("Source Validation Results - Epoch: {}".format(engine.state.epoch))
