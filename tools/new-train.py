@@ -52,19 +52,22 @@ def train(cfg):
         print('Path to the checkpoint of center_param:', path_to_center_param)
         path_to_optimizer_center = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_center')
         print('Path to the checkpoint of optimizer_center:', path_to_optimizer_center)
-        
+        model = torch.load(cfg.MODEL.PRETRAIN_PATH))
+        optimizer = torch.load(path_to_optimizer)
+        center_criterion = torch.load(path_to_center_param)
+        optimizer_center = torch.load(path_to_optimizer_center)
         #model.load_param(cfg.MODEL.PRETRAIN_PATH)
-
         """param_dict = torch.load(path_to_optimizer)
         for k, v in param_dict.state_dict().items():
             optimizer.state_dict()[k].copy_(param_dict.state_dict()[k])"""
-
+        """
         param_dict = torch.load('D:/download/chromedownload/resnet50_center_param_30.pth')
         for k, v in param_dict.state_dict().items():
             center_criterion.state_dict()[k].copy_(param_dict.state_dict()[k])
         
         param_dict = torch.load('D:\download\chromedownload\\resnet50_optimizer_center_30.pth')
         optimizer_center.load_state_dict(param_dict)
+        """
         """param_dict = torch.load('D:\download\chromedownload\\resnet50_optimizer_center_30.pth')
         o = optimizer_center.state_dict()
         for k, v in param_dict.state_dict().items():
@@ -85,7 +88,9 @@ def train(cfg):
             print('Path to the checkpoint of cluster_param:', path_to_cluster_param)
             path_to_optimizer_cluster = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_cluster')
             print('Path to the checkpoint of optimizer_cluster:', path_to_optimizer_cluster)
-            
+            cluster_criterion = torch.load(path_to_cluster_param)
+            optimizer_cluster = torch.load(path_to_optimizer_cluster)
+            """
             param_dict = torch.load(path_to_cluster_param)
             for k, v in param_dict.state_dict().items():
                 cluster_criterion.state_dict()[k].copy_(param_dict.state_dict()[k])
@@ -93,6 +98,7 @@ def train(cfg):
             param_dict = torch.load(path_to_optimizer_cluster)
             for k, v in param_dict.state_dict().items():
                 optimizer_cluster.state_dict()[k].copy_(param_dict.state_dict()[k])
+            """
             #load_param2(cluster_criterion,path_to_cluster_param)
             #load_param2(optimizer_cluster,path_to_optimizer_cluster)
             #cluster_criterion.load_state_dict(torch.load(path_to_cluster_param))
