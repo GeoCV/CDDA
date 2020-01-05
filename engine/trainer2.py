@@ -65,7 +65,7 @@ def create_supervised_trainer_with_center(
         loss = loss_fn(score, feat, target)
         global EPOCH
         global ITER
-        if EPOCH > 30:
+        if EPOCH >= 30:
             #获取目标数据集batch
             try:
                 target_img = next(target_train_loader_iter)[0]
@@ -196,6 +196,8 @@ def do_train_with_center2(
     @trainer.on(Events.STARTED)
     def start_training(engine):
         engine.state.epoch = start_epoch
+        global EPOCH
+        EPOCH = start_epoch
         evaluator.run(val_loader)
         cmc, mAP = evaluator.state.metrics['r1_mAP']
         logger.info("Source Validation Results - Epoch: {}".format(engine.state.epoch))
