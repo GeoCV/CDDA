@@ -1,5 +1,5 @@
 MODEL:
-  PRETRAIN_CHOICE: 'self'
+  PRETRAIN_CHOICE: 'imagenet'
   PRETRAIN_PATH: 'C:/Users/86180/.cache/torch/checkpoints/resnet50-19c8e357.pth'
   METRIC_LOSS_TYPE: 'triplet_center'
   IF_LABELSMOOTH: 'on'
@@ -36,7 +36,7 @@ SOLVER:
 
   CENTER_LR: 0.5
   CENTER_LOSS_WEIGHT: 0.0005
-  CLUSTER_LOSS_WEIGHT: 0.0005
+  CLUSTER_LOSS_WEIGHT: 1000.0
 
   RANGE_K: 2
   RANGE_MARGIN: 0.3

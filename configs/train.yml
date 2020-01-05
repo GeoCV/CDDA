@@ -1,6 +1,6 @@
 MODEL:
-  PRETRAIN_CHOICE: 'self'
-  PRETRAIN_PATH: '/home/aistudio/work/CDDA/log/Mar2D_CDL/resnet50_model_30.pth'
+  PRETRAIN_CHOICE: 'imagenet'
+  PRETRAIN_PATH: '/home/aistudio/data/data18947/data/resnet50-19c8e357.pth'
   METRIC_LOSS_TYPE: 'triplet_center'
   IF_LABELSMOOTH: 'on'
   IF_WITH_CENTER: 'yes'
@@ -46,7 +46,7 @@ SOLVER:
 
   BIAS_LR_FACTOR: 1
   WEIGHT_DECAY: 0.0005
-  WEIGHT_DECAY_BIAS: 0.0005
+  WEIGHT_DECAY_BIAS: 1000.0
   IMS_PER_BATCH: 64
 
   STEPS: [40, 70]

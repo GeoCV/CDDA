@@ -43,7 +43,8 @@ def train(cfg):
 
     # Add for using self trained model
     if cfg.MODEL.PRETRAIN_CHOICE == 'self':
-        start_epoch = eval(cfg.MODEL.PRETRAIN_PATH.split('/')[-1].split('.')[0].split('_')[-1])
+        start_epoch = 0
+        #start_epoch = eval(cfg.MODEL.PRETRAIN_PATH.split('/')[-1].split('.')[0].split('_')[-1])
         print('Start epoch:', start_epoch)
         path_to_optimizer = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer')
         print('Path to the checkpoint of optimizer:', path_to_optimizer)
@@ -52,23 +53,22 @@ def train(cfg):
         path_to_optimizer_center = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_center')
         print('Path to the checkpoint of optimizer_center:', path_to_optimizer_center)
         
-        def load_param2(obj, trained_path):
-            param_dict = torch.load(trained_path)
-            for k, v in param_dict.state_dict().items():
-                obj.state_dict()[k].copy_(param_dict.state_dict()[k])
-        model.load_param(cfg.MODEL.PRETRAIN_PATH)
+        #model.load_param(cfg.MODEL.PRETRAIN_PATH)
 
-        param_dict = torch.load(path_to_optimizer)
+        """param_dict = torch.load(path_to_optimizer)
         for k, v in param_dict.state_dict().items():
-            optimizer.state_dict()[k].copy_(param_dict.state_dict()[k])
+            optimizer.state_dict()[k].copy_(param_dict.state_dict()[k])"""
 
-        param_dict = torch.load(path_to_center_param)
+        param_dict = torch.load('D:/download/chromedownload/resnet50_center_param_30.pth')
         for k, v in param_dict.state_dict().items():
             center_criterion.state_dict()[k].copy_(param_dict.state_dict()[k])
         
-        param_dict = torch.load(path_to_optimizer_center)
+        param_dict = torch.load('D:\download\chromedownload\\resnet50_optimizer_center_30.pth')
+        optimizer_center.load_state_dict(param_dict)
+        """param_dict = torch.load('D:\download\chromedownload\\resnet50_optimizer_center_30.pth')
+        o = optimizer_center.state_dict()
         for k, v in param_dict.state_dict().items():
-            optimizer_center.state_dict()[k].copy_(param_dict.state_dict()[k])
+            optimizer_center.state_dict()[k].copy_(param_dict.state_dict()[k])"""
         
         #load_param2(optimizer,path_to_optimizer)
         #load_param2(center_criterion,path_to_center_param)
