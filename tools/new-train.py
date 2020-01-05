@@ -54,7 +54,8 @@ def train(cfg):
         print('Path to the checkpoint of optimizer_center:', path_to_optimizer_center)
         model.cuda()
 
-        model.load_state_dict(torch.load(cfg.MODEL.PRETRAIN_PATH),strict=False)
+        #model.load_state_dict(torch.load(cfg.MODEL.PRETRAIN_PATH),strict=False)
+        model.load_param(cfg.MODEL.PRETRAIN_PATH)
         optimizer.load_state_dict(torch.load(path_to_optimizer),strict=False)
         center_criterion.load_state_dict(torch.load(path_to_center_param),strict=False)
         optimizer_center.load_state_dict(torch.load(path_to_optimizer_center),strict=False)
