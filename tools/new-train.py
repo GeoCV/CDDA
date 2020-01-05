@@ -57,9 +57,22 @@ def train(cfg):
             for k, v in param_dict.state_dict().items():
                 obj.state_dict()[k].copy_(param_dict.state_dict()[k])
         model.load_param(cfg.MODEL.PRETRAIN_PATH)
-        load_param2(optimizer,path_to_optimizer)
-        load_param2(center_criterion,path_to_center_param)
-        load_param2(optimizer_center,path_to_optimizer_center)
+
+        param_dict = torch.load(path_to_optimizer)
+        for k, v in param_dict.state_dict().items():
+            optimizer.state_dict()[k].copy_(param_dict.state_dict()[k])
+
+        param_dict = torch.load(path_to_center_param)
+        for k, v in param_dict.state_dict().items():
+            center_criterion.state_dict()[k].copy_(param_dict.state_dict()[k])
+        
+        param_dict = torch.load(path_to_optimizer_center)
+        for k, v in param_dict.state_dict().items():
+            optimizer_center.state_dict()[k].copy_(param_dict.state_dict()[k])
+        
+        #load_param2(optimizer,path_to_optimizer)
+        #load_param2(center_criterion,path_to_center_param)
+        #load_param2(optimizer_center,path_to_optimizer_center)
         """
         model.load_state_dict(torch.load(cfg.MODEL.PRETRAIN_PATH))
         optimizer.load_state_dict(torch.load(path_to_optimizer),strict=False)
@@ -72,8 +85,16 @@ def train(cfg):
             print('Path to the checkpoint of cluster_param:', path_to_cluster_param)
             path_to_optimizer_cluster = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_cluster')
             print('Path to the checkpoint of optimizer_cluster:', path_to_optimizer_cluster)
-            load_param2(cluster_criterion,path_to_cluster_param)
-            load_param2(optimizer_cluster,path_to_optimizer_cluster)
+            
+            param_dict = torch.load(path_to_cluster_param)
+            for k, v in param_dict.state_dict().items():
+                cluster_criterion.state_dict()[k].copy_(param_dict.state_dict()[k])
+
+            param_dict = torch.load(path_to_optimizer_cluster)
+            for k, v in param_dict.state_dict().items():
+                optimizer_cluster.state_dict()[k].copy_(param_dict.state_dict()[k])
+            #load_param2(cluster_criterion,path_to_cluster_param)
+            #load_param2(optimizer_cluster,path_to_optimizer_cluster)
             #cluster_criterion.load_state_dict(torch.load(path_to_cluster_param))
             #optimizer_cluster.load_state_dict(torch.load(path_to_optimizer_cluster))
         ###
