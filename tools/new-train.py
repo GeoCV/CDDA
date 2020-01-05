@@ -56,17 +56,17 @@ def train(cfg):
 
         #model.load_state_dict(torch.load(cfg.MODEL.PRETRAIN_PATH),strict=False)
         model.load_param(cfg.MODEL.PRETRAIN_PATH)
-        optimizer.load_state_dict(torch.load(path_to_optimizer),strict=False)
-        center_criterion.load_state_dict(torch.load(path_to_center_param),strict=False)
-        optimizer_center.load_state_dict(torch.load(path_to_optimizer_center),strict=False)
+        optimizer.load_state_dict(torch.load(path_to_optimizer))
+        center_criterion.load_state_dict(torch.load(path_to_center_param))
+        optimizer_center.load_state_dict(torch.load(path_to_optimizer_center))
         ###
         if start_epoch > 30:
             path_to_cluster_param = cfg.MODEL.PRETRAIN_PATH.replace('model', 'cluster_param')
             print('Path to the checkpoint of cluster_param:', path_to_cluster_param)
             path_to_optimizer_cluster = cfg.MODEL.PRETRAIN_PATH.replace('model', 'optimizer_cluster')
             print('Path to the checkpoint of optimizer_cluster:', path_to_optimizer_cluster)
-            cluster_criterion.load_state_dict(torch.load(path_to_cluster_param),strict=False)
-            optimizer_cluster.load_state_dict(torch.load(path_to_optimizer_cluster),strict=False)
+            cluster_criterion.load_state_dict(torch.load(path_to_cluster_param))
+            optimizer_cluster.load_state_dict(torch.load(path_to_optimizer_cluster))
         ###
         scheduler = WarmupMultiStepLR(optimizer, cfg.SOLVER.STEPS, cfg.SOLVER.GAMMA, cfg.SOLVER.WARMUP_FACTOR,
                                         cfg.SOLVER.WARMUP_ITERS, cfg.SOLVER.WARMUP_METHOD, start_epoch)
