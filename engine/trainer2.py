@@ -142,6 +142,7 @@ def do_train_with_center2(
         train_loader,
         val_loader,
         target_train_loader,#
+        target_val_loader,
         optimizer,
         optimizer_center,
         optimizer_cluster,  #
@@ -195,6 +196,18 @@ def do_train_with_center2(
     @trainer.on(Events.STARTED)
     def start_training(engine):
         engine.state.epoch = start_epoch
+        evaluator.run(val_loader)
+        cmc, mAP = evaluator.state.metrics['r1_mAP']
+        logger.info("Source Validation Results - Epoch: {}".format(engine.state.epoch))
+        logger.info("mAP: {:.1%}".format(mAP))
+        for r in [1, 5, 10]:
+            logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
+        evaluator.run(target_val_loader)
+        cmc, mAP = evaluator.state.metrics['r1_mAP']
+        logger.info("Target Validation Results - Epoch: {}".format(engine.state.epoch))
+        logger.info("mAP: {:.1%}".format(mAP))
+        for r in [1, 5, 10]:
+            logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
 
     @trainer.on(Events.EPOCH_STARTED)
     def adjust_learning_rate(engine):
@@ -229,7 +242,13 @@ def do_train_with_center2(
         if engine.state.epoch % eval_period == 0:
             evaluator.run(val_loader)
             cmc, mAP = evaluator.state.metrics['r1_mAP']
-            logger.info("Validation Results - Epoch: {}".format(engine.state.epoch))
+            logger.info("Source Validation Results - Epoch: {}".format(engine.state.epoch))
+            logger.info("mAP: {:.1%}".format(mAP))
+            for r in [1, 5, 10]:
+                logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
+            evaluator.run(target_val_loader)
+            cmc, mAP = evaluator.state.metrics['r1_mAP']
+            logger.info("Target Validation Results - Epoch: {}".format(engine.state.epoch))
             logger.info("mAP: {:.1%}".format(mAP))
             for r in [1, 5, 10]:
                 logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))

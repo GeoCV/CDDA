@@ -24,7 +24,7 @@ from utils.logger import setup_logger
 def train(cfg):
     # prepare dataset
     train_loader, val_loader, num_query, num_classes = make_data_loader(cfg)
-    target_train_loader = make_data_loader2(cfg)
+    target_train_loader, target_val_loader = make_data_loader2(cfg)
 
     # prepare model
     model = build_model(cfg, num_classes)
@@ -115,6 +115,7 @@ def train(cfg):
         train_loader,
         val_loader,
         target_train_loader,#
+        target_val_loader,#
         optimizer,
         optimizer_center,
         optimizer_cluster,  #

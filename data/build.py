@@ -48,7 +48,7 @@ def make_data_loader(cfg):
 #载入第二个数据集，第二个数据集不需要val
 def make_data_loader2(cfg):
     train_transforms = build_transforms(cfg, is_train=True)
-    #val_transforms = build_transforms(cfg, is_train=False)
+    val_transforms = build_transforms(cfg, is_train=False)
     num_workers = cfg.DATALOADER.NUM_WORKERS
     if len(cfg.DATASETS.NAMES2) == 1:
         dataset = init_dataset(cfg.DATASETS.NAMES2, root=cfg.DATASETS.ROOT_DIR2)
@@ -71,9 +71,9 @@ def make_data_loader2(cfg):
             num_workers=num_workers, collate_fn=train_collate_fn
         )
 
-    """val_set = ImageDataset(dataset.query + dataset.gallery, val_transforms)
+    val_set = ImageDataset(dataset.query + dataset.gallery, val_transforms)
     val_loader = DataLoader(
         val_set, batch_size=cfg.TEST.IMS_PER_BATCH, shuffle=False, num_workers=num_workers,
         collate_fn=val_collate_fn
-    )"""
-    return train_loader
+    )
+    return train_loader,val_loader
