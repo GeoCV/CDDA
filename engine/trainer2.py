@@ -181,7 +181,8 @@ def do_train_with_center2(
                                                                      'optimizer': optimizer,
                                                                      'center_param': center_criterion,
                                                                      'optimizer_center': optimizer_center,
-                                                                     'optimizer_cluster': optimizer_cluster})
+                                                                     'optimizer_cluster': optimizer_cluster,
+                                                                     'cluster_param': cluster_criterion})
 
     timer.attach(trainer, start=Events.EPOCH_STARTED, resume=Events.ITERATION_STARTED,
                  pause=Events.ITERATION_COMPLETED, step=Events.ITERATION_COMPLETED)
@@ -192,7 +193,8 @@ def do_train_with_center2(
 
     @trainer.on(Events.STARTED)
     def start_training(engine):
-        engine.state.epoch = start_epoch
+        engine.state.
+         = start_epoch
         evaluator.run(val_loader)
         cmc, mAP = evaluator.state.metrics['r1_mAP']
         logger.info("Source Validation Results - Epoch: {}".format(engine.state.epoch))
