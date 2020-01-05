@@ -65,7 +65,7 @@ def create_supervised_trainer_with_center(
         loss = loss_fn(score, feat, target)
         global EPOCH
         global ITER
-        if EPOCH > 0:
+        if EPOCH > 30:
             #获取目标数据集batch
             try:
                 target_img = next(target_train_loader_iter)[0]
