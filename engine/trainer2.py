@@ -77,7 +77,7 @@ def create_supervised_trainer_with_center(
             loss_cluster = loss_cluster_fn(target_feat)
             loss += loss_cluster
             if ITER == 0:
-                logger.info("Total loss is {}, center loss is {}, cluster loss is {}".format(loss, center_loss_weight*center_criterion(feat, target),loss_cluster))
+                logger.info("Total loss is {}, center loss is {}, cluster loss is {}".format(loss, center_loss_weight*center_criterion(feat, target),cluster_loss_weight*loss_cluster))
         else:
             if ITER == 0:
                 logger.info("Total loss is {}, center loss is {}".format(loss, center_criterion(feat, target)))
@@ -197,6 +197,7 @@ def do_train_with_center2(
     @trainer.on(Events.STARTED)
     def start_training(engine):
         engine.state.epoch = start_epoch
+        """
         evaluator.run(val_loader)
         cmc, mAP = evaluator.state.metrics['r1_mAP']
         logger.info("Source Validation Results - Epoch: {}".format(engine.state.epoch))
@@ -209,6 +210,7 @@ def do_train_with_center2(
         logger.info("mAP: {:.1%}".format(mAP))
         for r in [1, 5, 10]:
             logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
+        """
 
     @trainer.on(Events.EPOCH_STARTED)
     def adjust_learning_rate(engine):
