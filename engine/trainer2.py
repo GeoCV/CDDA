@@ -77,7 +77,7 @@ def create_supervised_trainer_with_center(
             loss_cluster = loss_cluster_fn(target_feat)
             loss += loss_cluster
             if ITER == 0:
-                logger.info("Total loss is {}, center loss is {}, cluster loss is {}".format(loss, center_loss_weight*center_criterion(feat, target),cluster_loss_weight*loss_cluster))
+                logger.info("Total loss is {}, center loss is {}, cluster loss is {}".format(loss, center_loss_weight*center_criterion(feat, target),loss_cluster))
         else:
             if ITER == 0:
                 logger.info("Total loss is {}, center loss is {}".format(loss, center_loss_weight*center_criterion(feat, target)))
