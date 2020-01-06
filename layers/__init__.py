@@ -7,7 +7,8 @@
 import torch.nn.functional as F
 
 from .triplet_loss import TripletLoss, CrossEntropyLabelSmooth
-from .center_loss import CenterLoss,ClusterLoss
+from .center_loss import CenterLoss
+from .cluster_loss import ClusterLoss
 
 
 def make_loss(cfg, num_classes):    # modified by gu

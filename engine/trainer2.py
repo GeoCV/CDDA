@@ -80,7 +80,7 @@ def create_supervised_trainer_with_center(
                 logger.info("Total loss is {}, center loss is {}, cluster loss is {}".format(loss, center_loss_weight*center_criterion(feat, target),cluster_loss_weight*loss_cluster))
         else:
             if ITER == 0:
-                logger.info("Total loss is {}, center loss is {}".format(loss, center_criterion(feat, target)))
+                logger.info("Total loss is {}, center loss is {}".format(loss, center_loss_weight*center_criterion(feat, target)))
         loss.backward()
         optimizer.step()
         for param in center_criterion.parameters():

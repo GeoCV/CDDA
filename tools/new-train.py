@@ -8,6 +8,7 @@ import argparse
 import os
 import sys
 import torch
+from torch import nn
 
 from torch.backends import cudnn
 sys.path.append('.')
@@ -40,6 +41,11 @@ def train(cfg):
     #                               cfg.SOLVER.WARMUP_ITERS, cfg.SOLVER.WARMUP_METHOD)
 
     arguments = {}
+    
+    center_criterion = torch.load('D:\download\chromedownload\\resnet50_center_param_30 (1).pth')
+    center_criterion.centers = nn.Parameter(center_criterion.centers)
+    """for param in center_criterion.parameters():
+        param.grad.data *= (1. / center_loss_weight)"""
 
     # Add for using self trained model
     if cfg.MODEL.PRETRAIN_CHOICE == 'self':
@@ -55,32 +61,6 @@ def train(cfg):
         optimizer = torch.load(path_to_optimizer)
         center_criterion = torch.load(path_to_center_param)
         optimizer_center = torch.load(path_to_optimizer_center)
-        #model.load_param(cfg.MODEL.PRETRAIN_PATH)
-        """param_dict = torch.load(path_to_optimizer)
-        for k, v in param_dict.state_dict().items():
-            optimizer.state_dict()[k].copy_(param_dict.state_dict()[k])"""
-        """
-        param_dict = torch.load('D:/download/chromedownload/resnet50_center_param_30.pth')
-        for k, v in param_dict.state_dict().items():
-            center_criterion.state_dict()[k].copy_(param_dict.state_dict()[k])
-        
-        param_dict = torch.load('D:\download\chromedownload\\resnet50_optimizer_center_30.pth')
-        optimizer_center.load_state_dict(param_dict)
-        """
-        """param_dict = torch.load('D:\download\chromedownload\\resnet50_optimizer_center_30.pth')
-        o = optimizer_center.state_dict()
-        for k, v in param_dict.state_dict().items():
-            optimizer_center.state_dict()[k].copy_(param_dict.state_dict()[k])"""
-        
-        #load_param2(optimizer,path_to_optimizer)
-        #load_param2(center_criterion,path_to_center_param)
-        #load_param2(optimizer_center,path_to_optimizer_center)
-        """
-        model.load_state_dict(torch.load(cfg.MODEL.PRETRAIN_PATH))
-        optimizer.load_state_dict(torch.load(path_to_optimizer),strict=False)
-        center_criterion.load_state_dict(torch.load(path_to_center_param))
-        optimizer_center.load_state_dict(torch.load(path_to_optimizer_center))
-        """
         ###
         if start_epoch >= cfg.SOLVER.MY_START_EPOCH:
             path_to_cluster_param = cfg.MODEL.PRETRAIN_PATH.replace('model', 'cluster_param')
@@ -89,19 +69,6 @@ def train(cfg):
             print('Path to the checkpoint of optimizer_cluster:', path_to_optimizer_cluster)
             cluster_criterion = torch.load(path_to_cluster_param)
             optimizer_cluster = torch.load(path_to_optimizer_cluster)
-            """
-            param_dict = torch.load(path_to_cluster_param)
-            for k, v in param_dict.state_dict().items():
-                cluster_criterion.state_dict()[k].copy_(param_dict.state_dict()[k])
-
-            param_dict = torch.load(path_to_optimizer_cluster)
-            for k, v in param_dict.state_dict().items():
-                optimizer_cluster.state_dict()[k].copy_(param_dict.state_dict()[k])
-            """
-            #load_param2(cluster_criterion,path_to_cluster_param)
-            #load_param2(optimizer_cluster,path_to_optimizer_cluster)
-            #cluster_criterion.load_state_dict(torch.load(path_to_cluster_param))
-            #optimizer_cluster.load_state_dict(torch.load(path_to_optimizer_cluster))
         ###
         scheduler = WarmupMultiStepLR(optimizer, cfg.SOLVER.STEPS, cfg.SOLVER.GAMMA, cfg.SOLVER.WARMUP_FACTOR,
                                         cfg.SOLVER.WARMUP_ITERS, cfg.SOLVER.WARMUP_METHOD, start_epoch)
