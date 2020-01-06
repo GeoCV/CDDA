@@ -43,8 +43,8 @@ def train(cfg):
     arguments = {}
     
     """center_criterion = torch.load('D:\download\chromedownload\\resnet50_center_param_30 (1).pth')
-    center_criterion.centers = nn.Parameter(center_criterion.centers)"""
-    """for param in center_criterion.parameters():
+    center_criterion.centers = nn.Parameter(center_criterion.centers)
+    for param in center_criterion.parameters():
         param.grad.data *= (1. / center_loss_weight)"""
 
     # Add for using self trained model
